@@ -1,13 +1,13 @@
 import React from 'react'
-import { PriorityEnum } from './types'
+import { PriorityEnum } from '../types'
 import Chip from '@mui/material/Chip';
 import styled from "@emotion/styled";
 
 type CustomColor = {
-  customColor: string;
+  customcolor: string;
 }
 const MyChip = styled(Chip) <CustomColor>`
-  background-color: ${props => props.customColor};
+  background-color: ${props => props.customcolor};
   min-width: 70px;
 `
 
@@ -30,7 +30,7 @@ export const PriorityLabel: React.FC<Props> = ({ type }) => {
   return (
     <MyChip
       label={getText(type)}
-      customColor={getColor(type)}
+      customcolor={getColor(type)}
       color='primary'
       variant="filled"
     />

@@ -18,26 +18,12 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { PriorityEnum } from './types';
 import { PriorityLabel } from './PriorityLabel';
+import { useAppSelector } from '../app/hooks';
 
-function createData(
-  name: string,
-  priority: PriorityEnum,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, priority, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurtFrozen', PriorityEnum.URGENT, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', PriorityEnum.REGULAR, 9.0, 37, 4.3),
-  createData('Eclair', PriorityEnum.TRIVIAL, 16.0, 24, 6.0),
-];
 export function JobTable() {
 
+  const jobs = useAppSelector(s => s.job.jobs)
   const [priority, setPriority] = React.useState<string | undefined>("ALL");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -82,9 +68,9 @@ export function JobTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {jobs.map((row) => (
             <TableRow
-              key={row.name}
+              key={row.id}
             // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
