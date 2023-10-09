@@ -15,7 +15,7 @@ const persistedReducer = persistReducer(
     key: "root",
     storage,
   },
-  rootReducer
+  rootReducer,
 );
 
 export const store = configureStore({

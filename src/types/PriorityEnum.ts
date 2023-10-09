@@ -1,6 +1,5 @@
 export enum PriorityEnum {
-    URGENT = "URGENT",
-    REGULAR = "REGULAR",
-    TRIVIAL = "TRIVIAL",
-  }
-  
+  URGENT = "URGENT",
+  REGULAR = "REGULAR",
+  TRIVIAL = "TRIVIAL",
+}

@@ -23,7 +23,7 @@ export const counterSlice = createSlice({
   reducers: {
     addJob: (
       state,
-      action: PayloadAction<{ name: string; priority: PriorityEnum }>
+      action: PayloadAction<{ name: string; priority: PriorityEnum }>,
     ) => {
       const nextID = Math.max(...state.jobs.map((j) => j.id || 0)) + 1;
       state.jobs.push({
@@ -33,7 +33,7 @@ export const counterSlice = createSlice({
     },
     updateJobByID: (
       state,
-      action: PayloadAction<{ id: number; priority: PriorityEnum }>
+      action: PayloadAction<{ id: number; priority: PriorityEnum }>,
     ) => {
       const item = state.jobs.find((j) => j.id === action.payload.id);
       if (!item) {
