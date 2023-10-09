@@ -27,20 +27,20 @@ export function JobTable() {
     },
   });
   const jobs = useAppSelector((s) => s.job.jobs);
-  // };
+
   const priority = watch("priority");
   const jobNameForFilter = watch("name");
 
   const filtredJobs = useMemo(() => {
-    const lowerCaseText = jobNameForFilter.trim().toLocaleLowerCase();
+    const compareText = jobNameForFilter.trim().toLocaleLowerCase();
     return jobs.filter((j) => {
-      const priorityFilterRes =
-        priority === "ALL" ? true : j.priority === priority;
-      const textFilterRes =
-        lowerCaseText.length === 0
-          ? true
-          : j.name.toLocaleLowerCase().includes(lowerCaseText);
-      return textFilterRes && priorityFilterRes;
+      const pRes = priority === "ALL" ? true : j.priority === priority;
+
+      const text = j.name.toLocaleLowerCase();
+
+      const tRes = compareText.length === 0 ? true : text.includes(compareText);
+
+      return tRes && pRes;
     });
   }, [jobs, jobNameForFilter, priority]);
 
@@ -97,10 +97,7 @@ export function JobTable() {
         </TableHead>
         <TableBody>
           {filtredJobs.map((row) => (
-            <TableRow
-              key={row.id}
-              // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
+            <TableRow key={row.id}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>

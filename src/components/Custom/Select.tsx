@@ -4,7 +4,7 @@ import { UseFormRegisterReturn } from "react-hook-form";
 
 type Props = TextFieldProps & {
   register: UseFormRegisterReturn;
-  value: number | string | undefined | null;
+  value: number | string | undefined;
 };
 export const CustomSelect: React.FC<Props> = ({
   register,
