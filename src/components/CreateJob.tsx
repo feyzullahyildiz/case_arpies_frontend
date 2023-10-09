@@ -8,18 +8,28 @@ import { PriorityEnum } from '../types';
 import { useForm } from 'react-hook-form';
 import { useAppDispatch } from '../app/hooks';
 import { addJob } from '../features/jobs/jobSlice';
+import { CustomSelect } from './Custom/Select';
 
 interface IFormInput {
     name: string;
-    priority: PriorityEnum;
+    priority: PriorityEnum | "";
 }
 
 export const CreateJob = () => {
     const dispatch = useAppDispatch();
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<IFormInput>();
-
+    const { register, watch, handleSubmit, formState: { errors }, setValue } = useForm<IFormInput>({
+        defaultValues: {
+            name: "",
+            priority: ""
+        }
+    });
+    const priority = watch("priority");
     const onSubmit = (values: IFormInput) => {
-        dispatch(addJob(values));
+        if (values.priority === "") {
+            return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        dispatch(addJob(values as any));
         setValue("name", "")
     }
     return (
@@ -32,7 +42,6 @@ export const CreateJob = () => {
             <Box sx={{ flex: 1 }}>
                 <FormControl fullWidth variant="standard">
                     <TextField
-                        id="outlined-basic"
                         label="Job Name"
                         variant="standard"
                         {...register("name", {
@@ -51,20 +60,18 @@ export const CreateJob = () => {
             </Box>
             <Box sx={{ flexShrink: 0, minWidth: 140 }}>
                 <FormControl fullWidth variant="standard" >
-                    <TextField
-                        select
+                    <CustomSelect
                         fullWidth
                         label="Job Priority"
-                        defaultValue=''
-                        inputProps={register("priority", { required: "Priority is required" })}
-                        id="demo-simple-select"
                         variant="standard"
+                        value={priority}
                         error={!!errors.priority}
+                        register={register("priority", { required: "Priority is required" })}
                     >
                         <MenuItem value={PriorityEnum.URGENT}>Urgent</MenuItem>
                         <MenuItem value={PriorityEnum.REGULAR}>Regular</MenuItem>
                         <MenuItem value={PriorityEnum.TRIVIAL}>Trivial</MenuItem>
-                    </TextField>
+                    </CustomSelect>
                     {errors.priority && <FormHelperText error>{errors.priority?.message}</FormHelperText>}
                     <FormHelperText>Select job's priority</FormHelperText>
                 </FormControl>
