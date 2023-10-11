@@ -4,12 +4,12 @@ import { JobType, PriorityEnum } from "../../types";
 
 export interface JobsState {
   jobs: JobType[];
-  status: "idle" | "loading" | "failed";
+  status: "idle" | "loading" | "failed" | "NEED_TO_FETCH_DATA";
 }
 
 const initialState: JobsState = {
-  jobs: [{ id: 1, name: "foo", priority: PriorityEnum.REGULAR }],
-  status: "idle",
+  jobs: [],
+  status: "NEED_TO_FETCH_DATA",
 };
 
 export const fetchDataAsync = createAsyncThunk("api/data", async () => {

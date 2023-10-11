@@ -1,15 +1,32 @@
+import { useEffect, useMemo } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import { CreateJob } from "./components/CreateJob";
 import { JobTable } from "./components/JobTable";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { fetchDataAsync } from "./features/jobs/jobSlice";
 
 export default function App() {
+  const status = useAppSelector((s) => s.job.status);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (status === "NEED_TO_FETCH_DATA") {
+      dispatch(fetchDataAsync());
+    }
+  }, [dispatch, status]);
+
+  const stateText = useMemo(() => {
+    if (status === "failed" || status === "loading") {
+      return status;
+    }
+    return "";
+  }, [status]);
   return (
     <Container maxWidth="md">
       <Box mt={2} mb={2}>
-        LOGO
+        LOGO {stateText}
       </Box>
       <Divider />
       <Box sx={{ my: 4 }}>

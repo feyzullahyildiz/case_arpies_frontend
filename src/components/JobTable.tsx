@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,9 +15,14 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { PriorityLabel } from "./PriorityLabel";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useForm } from "react-hook-form";
 import { CustomSelect } from "./Custom/Select";
+import { createConfirm } from "../util/createConfirm";
+import { deleteJobByID, updateJobByID } from "../features/jobs/jobSlice";
+import { JobType, PriorityEnum } from "../types";
+import { renderComponentOnDialog } from "../util/renderComponentOnDialog";
+import { EditJob } from "./EditJob";
 
 export function JobTable() {
   const { register, watch } = useForm({
@@ -26,6 +31,7 @@ export function JobTable() {
       priority: "ALL",
     },
   });
+  const dispatch = useAppDispatch();
   const jobs = useAppSelector((s) => s.job.jobs);
 
   const priority = watch("priority");
@@ -43,6 +49,32 @@ export function JobTable() {
       return tRes && pRes;
     });
   }, [jobs, jobNameForFilter, priority]);
+
+  const onDeleteStart = useCallback(
+    async (job: JobType) => {
+      const result = await createConfirm(job.name, {
+        header: "Deleting the JOB",
+        acceptButtonText: "Delete",
+      });
+      if (!result) {
+        return;
+      }
+      dispatch(deleteJobByID(job.id));
+    },
+    [dispatch],
+  );
+  const onEditStart = useCallback(
+    async (job: JobType) => {
+      const newPriority = await renderComponentOnDialog(<EditJob job={job} />);
+      if (!newPriority) {
+        return;
+      }
+      dispatch(
+        updateJobByID({ id: job.id, priority: newPriority as PriorityEnum }),
+      );
+    },
+    [dispatch],
+  );
 
   return (
     <TableContainer component={Paper}>
@@ -105,10 +137,13 @@ export function JobTable() {
                 <PriorityLabel type={row.priority} />
               </TableCell>
               <TableCell align="right">
-                <IconButton aria-label="edit">
+                <IconButton aria-label="edit" onClick={() => onEditStart(row)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton aria-label="delete">
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => onDeleteStart(row)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </TableCell>
