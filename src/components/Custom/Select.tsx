@@ -9,7 +9,8 @@ type Props = TextFieldProps & {
 export const CustomSelect: React.FC<Props> = ({
   register,
   value,
+  inputProps,
   ...props
 }) => {
-  return <TextField select value={value} inputProps={register} {...props} />;
+  return <TextField select value={value} inputProps={{...register, ...inputProps}} {...props} />;
 };

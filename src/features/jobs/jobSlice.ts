@@ -25,7 +25,7 @@ export const counterSlice = createSlice({
       state,
       action: PayloadAction<{ name: string; priority: PriorityEnum }>,
     ) => {
-      const nextID = Math.max(...state.jobs.map((j) => j.id || 0)) + 1;
+      const nextID = Math.max(...state.jobs.map((j) => j.id || 0), 0) + 1;
       state.jobs.push({
         id: nextID,
         ...action.payload,

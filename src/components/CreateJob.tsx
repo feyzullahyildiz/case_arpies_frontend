@@ -9,13 +9,16 @@ import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../app/hooks";
 import { addJob } from "../features/jobs/jobSlice";
 import { CustomSelect } from "./Custom/Select";
+import React, { useMemo } from "react";
 
 interface IFormInput {
   name: string;
   priority: PriorityEnum | "";
 }
-
-export const CreateJob = () => {
+interface Props {
+  naviteSelect?: boolean;
+}
+export const CreateJob: React.FC<Props> = ({ naviteSelect = false }) => {
   const dispatch = useAppDispatch();
   const {
     register,
@@ -38,6 +41,27 @@ export const CreateJob = () => {
     dispatch(addJob(values as any));
     setValue("name", "");
   };
+  const options = useMemo(() => {
+    const list = [
+      { value: PriorityEnum.URGENT, displayName: "Urgent" },
+      { value: PriorityEnum.REGULAR, displayName: "Regular" },
+      { value: PriorityEnum.TRIVIAL, displayName: "Trivial" },
+    ];
+    return list.map((item) => {
+      if (naviteSelect) {
+        return (
+          <option key={item.value} value={item.value}>
+            {item.displayName}
+          </option>
+        );
+      }
+      return (
+        <MenuItem key={item.value} value={item.value}>
+          {item.displayName}
+        </MenuItem>
+      );
+    });
+  }, [naviteSelect]);
   return (
     <Box
       onSubmit={handleSubmit(onSubmit)}
@@ -61,6 +85,7 @@ export const CreateJob = () => {
                 value: 50,
               },
             })}
+            inputProps={{ "data-testid": "createJobInputText" }}
             error={!!errors.name}
             helperText={errors.name?.message}
           />
@@ -73,15 +98,16 @@ export const CreateJob = () => {
             fullWidth
             label="Job Priority"
             variant="standard"
+            SelectProps={{ native: naviteSelect }}
             value={priority}
             error={!!errors.priority}
+            // data-testid="prioritySelect"
+            inputProps={{ "data-testid": "prioritySelect" }}
             register={register("priority", {
               required: "Priority is required",
             })}
           >
-            <MenuItem value={PriorityEnum.URGENT}>Urgent</MenuItem>
-            <MenuItem value={PriorityEnum.REGULAR}>Regular</MenuItem>
-            <MenuItem value={PriorityEnum.TRIVIAL}>Trivial</MenuItem>
+            {options}
           </CustomSelect>
           {errors.priority && (
             <FormHelperText error>{errors.priority?.message}</FormHelperText>
@@ -90,7 +116,12 @@ export const CreateJob = () => {
         </FormControl>
       </Box>
       <Box sx={{ flexShrink: 0 }}>
-        <Button type="submit" title="Create" variant="contained">
+        <Button
+          type="submit"
+          title="Create"
+          variant="contained"
+          data-testid="submit-button"
+        >
           Create
         </Button>
       </Box>

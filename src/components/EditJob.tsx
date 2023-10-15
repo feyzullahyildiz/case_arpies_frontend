@@ -43,6 +43,7 @@ export const EditJob: React.FC<Props> = ({ job }) => {
             label="Job Name"
             variant="standard"
             value={job.name}
+            disabled
           ></TextField>
         </FormControl>
 
